@@ -1,81 +1,68 @@
 from menu import menu, resources
 
+profit = 0
 
-# TODO 1. Print report of all coffee machine resources
-def report():
-    generated_report = (
-        f"Water: {resources['water']}ml\nMilk: {resources['milk']}ml\nCoffee: {resources['coffee']}g\nMoney: ${resources['money']}")
-    return generated_report
-
-
-# TODO 2. Check resources sufficient to make drink order
-def check_sufficient(type_of_coffee):
-    enough_ingredients = True
-    if resources['water'] > menu[type_of_coffee]['ingredients']['water'] and resources['milk'] > \
-            menu[type_of_coffee]['ingredients']['milk'] and resources['coffee'] > menu[type_of_coffee]['ingredients'][
-        'coffee']:
-        resources['water'] -= menu[type_of_coffee]['ingredients']['water']
-        resources['milk'] -= menu[type_of_coffee]['ingredients']['milk']
-        resources['coffee'] -= menu[type_of_coffee]['ingredients']['coffee']
-    elif resources['water'] < menu[type_of_coffee]['ingredients']['water'] or resources['milk'] < \
-            menu[type_of_coffee]['ingredients']['milk'] or resources['coffee'] > menu[type_of_coffee]['ingredients'][
-        'coffee']:
-        if resources['water'] < menu[type_of_coffee]['ingredients']['water']:
-            print("Sorry there is not enough water.")
-            enough_ingredients = False
-        elif resources['milk'] < menu[type_of_coffee]['ingredients']['milk']:
-            print("Sorry there is not enough milk.")
-            enough_ingredients = False
-        elif resources['coffee'] < menu[type_of_coffee]['ingredients']['coffee']:
-            print("Sorry there is not enough coffee.")
-            enough_ingredients = False
-    return enough_ingredients
+def is_resource_sufficient(order_ingredients):
+    """Returns True when order can be made, False if ingredients are insufficient."""
+    for item in order_ingredients:
+        if order_ingredients[item] > resources[item]:
+            print(f"​Sorry there is not enough {item}.")
+            return False
+    return True
 
 
-# TODO 3. Process coins
-def coins_process():
+def process_coins():
+    """Returns the total calculated from coins inserted."""
     print("Please insert coins.")
-    quarters = int(input("How many quarters?: "))
-    dimes = int(input("How many dimes?: "))
-    nickles = int(input("How many nickles?: "))
-    pennies = int(input("How many pennies?: "))
-    money = round(quarters * 0.25 + dimes * 0.10 + nickles * 0.05 + pennies * 0.01, 2)
-    print(money)
-    return money
+    total = int(input("how many quarters?: ")) * 0.25
+    total += int(input("how many dimes?: ")) * 0.1
+    total += int(input("how many nickles?: ")) * 0.05
+    total += int(input("how many pennies?: ")) * 0.01
+    return total
 
 
-# TODO 4. Check if transaction can be completed
-
-def successful_transaction(type_of_coffee):
-    money = coins_process()
-    if money < menu[type_of_coffee]['cost']:
-        print("Sorry that's not enough money. Money refunded.")
-    elif money >= menu[type_of_coffee]['cost']:
-        change = round(money - menu[type_of_coffee]['cost'], 2)
-        resources['money'] += menu[type_of_coffee]['cost']
+def is_transaction_successful(money_received, drink_cost):
+    """Return True when the payment is accepted, or False if money is insufficient."""
+    if money_received >= drink_cost:
+        change = round(money_received - drink_cost, 2)
         print(f"Here is ${change} in change.")
-        print(f"Here is your {type_of_coffee}, Enjoy!")
+        global profit
+        profit += drink_cost
+        return True
+    else:
+        print("Sorry that's not enough money. Money refunded.")
+        return False
 
 
-# TODO 5. Make a coffee
-
-def make_coffee():
-    making_coffee = True
-    while making_coffee == True:
-        decision = input("What would you like ? (espresso/latte/cappuccino): ")
-        if decision == "report":
-            print(report())
-        elif decision == "espresso" or decision == "latte" or decision == "cappuccino":
-            type_of_coffee = decision
-            if check_sufficient(type_of_coffee=type_of_coffee) == True:
-                successful_transaction(type_of_coffee=type_of_coffee)
-
-        # TODO 6. Turning off coffee machine
-        elif decision == "off":
-            making_coffee = False
-            print("Turning off...")
-        else:
-            print("Incorrect input!")
+def make_coffee(drink_name, order_ingredients):
+    """Deduct the required ingredients from the resources."""
+    for item in order_ingredients:
+        resources[item] -= order_ingredients[item]
+    print(f"Here is your {drink_name} ☕️. Enjoy!")
 
 
-make_coffee()
+is_on = True
+
+while is_on:
+    choice = input("What would you like? (espresso/latte/cappuccino): ")
+    if choice == "off":
+        is_on = False
+    elif choice == "report":
+        print(f"Water: {resources['water']}ml")
+        print(f"Milk: {resources['milk']}ml")
+        print(f"Coffee: {resources['coffee']}g")
+        print(f"Money: ${profit}")
+    else:
+        drink = menu[choice]
+        if is_resource_sufficient(drink["ingredients"]):
+            payment = process_coins()
+            if is_transaction_successful(payment, drink["cost"]):
+                make_coffee(choice, drink["ingredients"])
+
+
+
+
+
+
+
+
