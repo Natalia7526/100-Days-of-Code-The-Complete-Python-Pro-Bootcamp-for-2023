@@ -1,33 +1,59 @@
+import time
 from turtle import Screen
 from paddle import Paddle
+from scoreboard import Scoreboard
+from ball import Ball
 
-STARTING_POSITIONS_PLAYER_1 = [(-300, -40), (-300, -20), (-300, 0), (-300, 20), (-300, 40)]
-STARTING_POSITIONS_PLAYER_2 = [(300, -40), (300, -20), (300, 0), (300, 20), (300, 40)]
-
-
-#TODO 1 Create the screen
+# TODO 1 Create the screen
 
 screen = Screen()
-screen.setup(width=650, height=650)
+screen.setup(width=800, height=600)
 screen.bgcolor("black")
 screen.title("Ping Pong")
-# screen.tracer(0)
+screen.tracer(0)
 
-#TODO 2 Create and move a paddle
+# TODO 2 Create and move a paddle
+player_1 = Paddle(starting_position=(350, 0))
+screen.listen()
+screen.onkey(player_1.go_up, "Up")
+screen.onkey(player_1.go_down, "Down")
 
-#TODO 3 Create another paddle
-player_1 = Paddle()
-player_1.create_paddle(positions=STARTING_POSITIONS_PLAYER_1)
-player_2 = Paddle()
-player_2.create_paddle(positions=STARTING_POSITIONS_PLAYER_2)
-#TODO 4 Create the ball and make it move
-#TODO 5 Detect collision with wall and bounce
-#TODO 6 Detect collision with paddle
-#TODO 7 Detect when paddle misses
-#TODO 8 Keep score
+# TODO 3 Create another paddle
+player_2 = Paddle(starting_position=(-350, 0))
+screen.onkey(player_2.go_up, "w")
+screen.onkey(player_2.go_down, "s")
 
+# TODO 4 Create the ball and make it move
+ball = Ball()
 
+# definition of scoreboard
+scoreboard = Scoreboard()
 
+game_is_on = True
+while game_is_on:
+    time.sleep(ball.move_speed)
+    screen.update()
+    ball.move()
+# TODO 5 Detect collision with wall and bounce
+    if ball.ycor() > 280 or ball.ycor() < -280:
+        # needs bounce
+        ball.bounce_y()
+
+# TODO 6 Detect collision with paddle
+    # collision with paddle
+    if (ball.distance(player_1) < 50 and ball.xcor() > 320) or (ball.distance(player_2) < 50 and ball.xcor() < -320):
+        ball.bounce_x()
+
+# TODO 7 Detect when paddle misses
+    # detect player_1 paddle misses
+    if ball.xcor() > 380:
+        ball.reset_position()
+        scoreboard.l_point()
+    # detect player_2 paddle misses
+    if ball.xcor() < -380:
+        ball.reset_position()
+        scoreboard.r_point()
+# TODO 8 Keep score
 
 
 screen.exitonclick()
