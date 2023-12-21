@@ -1,3 +1,4 @@
+import math
 from tkinter import *
 
 # ---------------------------- CONSTANTS ------------------------------- #
@@ -14,11 +15,18 @@ LONG_BREAK_MIN = 20
 # ---------------------------- TIMER RESET ---------------------------- #
 
 # ---------------------------- TIMER MECHANISM ------------------------ #
+def start_timer():
+    # function calling
+    count_down(WORK_MIN * 60)
 
 
 # ---------------------------- COUNTDOWN MECHANISM -------------------- #
 def count_down(count):
-    canvas.itemconfig(timer_text, text=count)
+
+    count_min = math.floor(count / 60)
+    count_sec = count % 60
+
+    canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
     if count > 0:
         window.after(1000, count_down, count - 1)
 
@@ -37,7 +45,7 @@ canvas.grid(column=1, row=1)
 timer_label = Label(text="Timer", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "normal"))
 timer_label.grid(column=1, row=0)
 
-start_button = Button(text="Start", font=(FONT_NAME, 10, "normal"), highlightthickness=0)
+start_button = Button(text="Start", font=(FONT_NAME, 10, "normal"), highlightthickness=0, command=start_timer)
 start_button.grid(column=0, row=2)
 
 reset_button = Button(text="Reset", font=(FONT_NAME, 10, "normal"), highlightthickness=0)
@@ -45,8 +53,5 @@ reset_button.grid(column=2, row=2)
 
 checkmark_label = Label(text="✔", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 15, "normal"))
 checkmark_label.grid(column=1, row=3)
-
-# function calling
-count_down(5)
 
 window.mainloop()
