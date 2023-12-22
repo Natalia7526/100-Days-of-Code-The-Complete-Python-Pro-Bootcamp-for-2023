@@ -7,17 +7,38 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
-SHORT_BREAK_MIN = 5
-LONG_BREAK_MIN = 20
-
+WORK_MIN = 2
+# WORK_MIN = 2
+SHORT_BREAK_MIN = 1
+LONG_BREAK_MIN = 3
+reps = 0
 
 # ---------------------------- TIMER RESET ---------------------------- #
 
 # ---------------------------- TIMER MECHANISM ------------------------ #
 def start_timer():
-    # function calling
-    count_down(WORK_MIN * 60)
+    global reps
+    work_sec = WORK_MIN * 60
+    short_break_sec = SHORT_BREAK_MIN * 60
+    long_break_sec = LONG_BREAK_MIN * 60
+    print(reps)
+    reps += 1
+    if reps % 8 == 0:
+        # if it's the 8th rep:
+        count_down(long_break_sec)
+        timer_label.config(text="Break", fg=RED)
+        timer_label.grid(column=1, row=0)
+    elif reps % 2 == 0:
+        # if it's 2nd/4th/6th rep:
+        count_down(short_break_sec)
+        timer_label.config(text="Break", fg=PINK)
+        timer_label.grid(column=1, row=0)
+    else:
+        # if it's the 1st/3rf/5th/7th rep:
+        count_down(work_sec)
+        timer_label.config(text="Timer", fg=GREEN)
+        timer_label.grid(column=1, row=0)
+
 
 
 # ---------------------------- COUNTDOWN MECHANISM -------------------- #
@@ -26,10 +47,13 @@ def count_down(count):
     count_min = math.floor(count / 60)
     count_sec = count % 60
 
+    if count_sec < 10:
+        count_sec = f"0{count_sec}"
     canvas.itemconfig(timer_text, text=f"{count_min}:{count_sec}")
     if count > 0:
         window.after(1000, count_down, count - 1)
-
+    else:
+        start_timer()
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
@@ -55,3 +79,7 @@ checkmark_label = Label(text="✔", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 15, "n
 checkmark_label.grid(column=1, row=3)
 
 window.mainloop()
+
+
+
+
