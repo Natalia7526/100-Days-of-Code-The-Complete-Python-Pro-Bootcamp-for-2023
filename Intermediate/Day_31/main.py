@@ -7,6 +7,19 @@ GREEN = "#b1ddc6"
 TITLE_FONT = ("Ariel", 40, "italic")
 WORD_FONT = ("Ariel", 60, "bold")
 
+# ---------------------------- DATA ----------------------------------- #
+data = pd.read_csv("data/french_words.csv")
+fr_dictionary = data.to_dict(orient="records")
+print(fr_dictionary)
+
+
+# ---------------------------- WORD GENERATION ------------------------ #
+def generate_word():
+    random_dict = random.choice(fr_dictionary)
+    random_word = random_dict['French']
+    canvas.itemconfig(word_text, text=random_word)
+
+
 # ---------------------------- UI SETUP ------------------------------- #
 # Creating window
 window = Tk()
