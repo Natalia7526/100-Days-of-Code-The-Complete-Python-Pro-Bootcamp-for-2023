@@ -55,7 +55,7 @@ def get_sunrise_sunset_time():
 
     return sunrise, sunset
 
-Główna funkcja programu
+#Główna funkcja programu
 def main():
     while True:
         iss_position_check = check_iss_position()
