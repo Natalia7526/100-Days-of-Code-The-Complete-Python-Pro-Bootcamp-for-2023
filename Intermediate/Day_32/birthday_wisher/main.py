@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 def get_email_password():
-    app_password = pd.read_csv("passwords.csv")
+    app_password = pd.read_csv("../../passwords.csv")
     return app_password.iloc[0, 1]
 
 def get_todays_birthdays():
