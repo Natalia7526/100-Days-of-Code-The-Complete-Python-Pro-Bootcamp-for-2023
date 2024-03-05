@@ -24,4 +24,18 @@ def fetch_weather_data():
     return weather_data
 
 
+def bring_an_umbrella():
+    weather_data = fetch_weather_data()
+    will_rain = False
+    for hour_data in weather_data["list"]:
+        condition_code = hour_data["weather"][0]["id"]
+        if int(condition_code) < 700:
+            will_rain = True
+    if will_rain:
+        print("Bring an umbrella.")
 
+bring_an_umbrella()
+
+# response = fetch_weather_data()
+# weather_id = response.json()["list"][0]["weather"][0]["id"]
+# weather_description = response.json()["list"][0]["weather"][0]["description"]
