@@ -15,20 +15,35 @@ user_params = {
 # response = requests.post(url=pixela_endpoint, json=user_params)
 # print(response.text)
 
-graph_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs"
+# AUTHENTICATION
 
+headers = {
+    "X-USER-TOKEN": TOKEN
+}
+
+# GRAPH
+GRAPH_ID = "booktracker"
+
+graph_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs"
 graph_config = {
-    "id": "booktracker",
+    "id": GRAPH_ID,
     "name": "Reading Graph",
     "unit": "pages",
     "type": "int",
     "color": "ajisai"
 }
 
-headers = {
-    "X-USER-TOKEN": TOKEN
+# response = requests.post(url=graph_endpoint, json=graph_config, headers=headers)
+# print(response.text)
+
+# PIXELS
+DATE = "20240312"
+
+pixel_endpoint = f"{pixela_endpoint}/{USERNAME}/graphs/{GRAPH_ID}"
+pixel_config = {
+    "date": DATE,
+    "quantity": "21",
 }
 
-response = requests.post(url=graph_endpoint, json=graph_config, headers=headers)
+response = requests.post(url=pixel_endpoint, json=pixel_config, headers=headers)
 print(response.text)
-
