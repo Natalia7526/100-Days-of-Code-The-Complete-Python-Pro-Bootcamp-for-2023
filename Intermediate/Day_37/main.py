@@ -1,10 +1,14 @@
 import requests
+import os
 from datetime import datetime
+from dotenv import load_dotenv
 
-TOKEN = "wurwirifslkls"
-USERNAME = "natalia7526"
-PIXELA_ENDPOINT = "https://pixe.la/v1/users"
-GRAPH_ID = "booktracker"
+load_dotenv()
+
+TOKEN = os.environ["TOKEN_PIXELA"]
+USERNAME = os.environ["USERNAME_PIXELA"]
+PIXELA_ENDPOINT = os.environ["PIXELA_ENDPOINT"]
+GRAPH_ID = os.environ["GRAPH_ID"]
 
 
 def create_user():
@@ -35,7 +39,6 @@ def create_graph():
 def create_pixel(date, quantity):
     # Format the date into YYYYMMDD
     formatted_date = datetime.strptime(date, "%d/%m/%Y").strftime("%Y%m%d")
-
     pixel_endpoint = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs/{GRAPH_ID}"
     pixel_config = {"date": formatted_date, "quantity": quantity}
     headers = {"X-USER-TOKEN": TOKEN}
@@ -46,6 +49,7 @@ def create_pixel(date, quantity):
 def update_pixel(date, quantity):
     formatted_date = datetime.strptime(date, "%d/%m/%Y").strftime("%Y%m%d")
     pixel_update_endpoint = f"{PIXELA_ENDPOINT}/{USERNAME}/graphs/{GRAPH_ID}/{formatted_date}"
+    # print(pixel_update_endpoint)
     pixel_update_config = {"quantity": quantity}
     headers = {"X-USER-TOKEN": TOKEN}
     response = requests.put(url=pixel_update_endpoint, json=pixel_update_config, headers=headers)
@@ -63,5 +67,7 @@ def delete_pixel(date):
 # create_user()
 # create_graph()
 # create_pixel("03/03/2024", "56")
-# update_pixel("03/03/2024", "23")
+update_pixel("03/03/2024", "23")
 # delete_pixel("03/03/2024")
+
+print(f"{PIXELA_ENDPOINT}/{USERNAME}/graphs")
